@@ -18,8 +18,8 @@ const keys={
 
 const setting ={
     start: false,
-    scope: 0,
-    speed: 3,
+    score: 0,
+    speed: 10,
     traffic: 3
 };
 
@@ -29,6 +29,7 @@ function getQuantityElements(heightElement) {
 
 function startGame(){
     start.style.display = 'none';
+    gameArea.innerHTML = '';
     
     for (let i=0; i < 50; i++) {
         const line = document.createElement('div');
@@ -45,13 +46,17 @@ function startGame(){
         enemy.style.left = Math.floor(Math.random() * (gameArea.offsetWidth-50))  + 'px';
         enemy.style.top = enemy.y + 'px';
         enemy.style.width = 100 + 'px';
-        enemy.style.background = 'transparent url(./image/pacman.png) center / cover no-repeat '
+        enemy.style.background = 'transparent url(./image/pacman.png) center / cover no-repeat';
         gameArea.appendChild(enemy);
 
     }
 
+    setting.scope = 0;
     setting.start = true;
     gameArea.appendChild(car);
+    car.style.left = '125px';
+    car.style.top = 'auto';
+    car.style.bottom = '10px';
     setting.x = car.offsetLeft;
     setting.y = car.offsetTop;
     requestAnimationFrame(playGame);   
@@ -60,6 +65,8 @@ function startGame(){
 function playGame(){
    
     if (setting.start){
+        setting.score += setting.speed;
+        score.innerHTML = 'Score<br>' + setting.score; 
         moveRoad();
         moveEnemy();
         if (keys.ArrowLeft && setting.x > 0){
@@ -83,7 +90,7 @@ function playGame(){
 
 
 
-console.log(getQuantityElements(200));
+
 
 
 function startRun(event){
@@ -112,6 +119,17 @@ function moveRoad(){
 function moveEnemy(){
     let enemy = document.querySelectorAll('.enemy');
     enemy.forEach(function(item){
+        let carRect = car.getBoundingClientRect();
+        let enemyRect = item.getBoundingClientRect();
+        if (carRect.top <= enemyRect.bottom &&
+            carRect.right>=enemyRect.left &&
+            carRect.left<= enemyRect.right &&
+            carRect.bottom >= enemyRect.top ){
+            setting.start = false;
+            console.warn('LNG');
+            start.style.display = '';
+            start.style.top = score.offsetHeight;
+        }
         item.y +=setting.speed / 2;
         item.style.top = item.y + 'px';
     
