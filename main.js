@@ -1,7 +1,8 @@
 const score = document.querySelector('.score'),
   start = document.querySelector('.start'),
   gameArea= document.querySelector('.gameArea'),
-  car = document.createElement('div');
+  car = document.createElement('div'),
+  music = document.createElement('audio');
 
   car.classList.add('car');
 
@@ -41,12 +42,14 @@ function startGame(){
 
     for (let i=0; i < getQuantityElements(100*setting.traffic); i++){
         const enemy = document.createElement('div');
+        let enemyImg = Math.floor(Math.random() * (4-1) + 1);
         enemy.classList.add('enemy');
         enemy.y = -100*setting.traffic*(i+1);
         enemy.style.left = Math.floor(Math.random() * (gameArea.offsetWidth-50))  + 'px';
         enemy.style.top = enemy.y + 'px';
-        enemy.style.width = 100 + 'px';
-        enemy.style.background = 'transparent url(./image/pacman.png) center / cover no-repeat';
+        console.log(enemyImg);
+        enemy.style.background = `transparent url(./image/enemy${enemyImg}.png) center / cover no-repeat`;
+        console.log(enemy.style.background);
         gameArea.appendChild(enemy);
 
     }
@@ -54,6 +57,8 @@ function startGame(){
     setting.scope = 0;
     setting.start = true;
     gameArea.appendChild(car);
+    music.setAttribute('autoplay', true);
+    music.setAttribute('src', './mp3/noize_mc.mp3');
     car.style.left = '125px';
     car.style.top = 'auto';
     car.style.bottom = '10px';
@@ -95,14 +100,16 @@ function playGame(){
 
 function startRun(event){
  event.preventDefault();   
- keys[event.key] = true;
- //console.log(event);
+ if (keys.hasOwnProperty(event.key)){
+    keys[event.key] = true;
+ }
 }
 
 function stopRun(event){
     event.preventDefault();
-    keys[event.key] = false;
-    //console.log(event); 
+    if (keys.hasOwnProperty(event.key)){
+        keys[event.key] = false;
+     } 
 }
 
 function moveRoad(){
